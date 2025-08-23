@@ -104,49 +104,100 @@ class CentreDetailPage extends ConsumerWidget {
   }
 
   Widget _buildCentreContent(BuildContext context, dynamic centre) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // Google Maps Integration
-          Container(
-            height: 250,
-            width: double.infinity,
-            child: centre.lat != null && centre.lng != null
-                ? _buildGoogleMap(context, centre)
-                : _buildNoMapPlaceholder(),
-          ),
-          
-          // Centre Information
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header info
-                _buildHeaderInfo(centre),
-                
-                const SizedBox(height: 24),
-                
-                // Contact & Location
-                _buildContactSection(context, centre),
-                
-                const SizedBox(height: 24),
-                
-                // Opening Hours
-                _buildOpeningHoursSection(centre),
-                
-                const SizedBox(height: 24),
-                
-                // Additional Info
-                _buildAdditionalInfoSection(centre),
-                
-                const SizedBox(height: 100), // Space for bottom button
-              ],
+    try {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            // Google Maps Integration
+            Container(
+              height: 250,
+              width: double.infinity,
+              child: centre.lat != null && centre.lng != null
+                  ? _buildGoogleMap(context, centre)
+                  : _buildNoMapPlaceholder(),
             ),
-          ),
-        ],
-      ),
-    );
+            
+            // Centre Information
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header info
+                  _buildHeaderInfo(centre),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Contact & Location
+                  _buildContactSection(context, centre),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Opening Hours
+                  _buildOpeningHoursSection(centre),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Getting Here
+                  _buildGettingHereSection(centre),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Additional Info
+                  _buildAdditionalInfoSection(centre),
+                  
+                  const SizedBox(height: 100), // Space for bottom button
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      // If there's a critical error, show error page
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Something went wrong',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.red[400],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Unable to load centre details. Please try again.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                // Refresh the page
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => CentreDetailPage(centreId: centreId),
+                  ),
+                );
+              },
+              child: const Text('Try Again'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _buildGoogleMap(BuildContext context, dynamic centre) {
@@ -218,7 +269,8 @@ class CentreDetailPage extends ConsumerWidget {
   }
 
   Widget _buildOpenStatus(dynamic centre) {
-    final isOpen = SingaporeTime.isCurrentlyOpen(centre.donationTypes['wholeBlood']['openingHours']);
+    try {
+      final isOpen = SingaporeTime.isCurrentlyOpen(centre.donationTypes['wholeBlood']['openingHours']);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -250,6 +302,37 @@ class CentreDetailPage extends ConsumerWidget {
         ],
       ),
     );
+    } catch (e) {
+      // If there's an error with donation types, return closed status
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'Closed',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _buildContactSection(BuildContext context, dynamic centre) {
@@ -345,6 +428,289 @@ class CentreDetailPage extends ConsumerWidget {
   }
 
   Widget _buildOpeningHoursSection(dynamic centre) {
+    try {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Opening Hours',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              
+              // Whole Blood Donation Section
+              _buildDonationTypeSection(
+                centre,
+                'Whole blood donation',
+                centre.donationTypes['wholeBlood'],
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Apheresis Donation Section (if available)
+              if (centre.donationTypes['apheresis']?['available'] == true)
+                _buildDonationTypeSection(
+                  centre,
+                  'Apheresis donation',
+                  centre.donationTypes['apheresis'],
+                ),
+              
+              // Apheresis Not Available Note
+              if (centre.donationTypes['apheresis']?['available'] == false)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Colors.grey[600],
+                        size: 16,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          centre.donationTypes['apheresis']?['note'] ?? 'Apheresis donation is not available at this location',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+              // Additional Notes
+              if (centre.notes != null && centre.notes.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Text(
+                  'Note: ${centre.notes.join(' ')}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      // If there's an error with opening hours, return error card
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Opening Hours',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: Colors.red[600],
+                      size: 16,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Unable to load opening hours. Please try again later.',
+                        style: TextStyle(
+                          color: Colors.red[600],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _buildDonationTypeSection(dynamic centre, String title, Map<String, dynamic> donationType) {
+    try {
+      if (donationType['available'] != true) {
+        return const SizedBox.shrink();
+      }
+
+      final openingHours = donationType['openingHours'] as Map<String, dynamic>;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section Header
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: DexterTokens.dexGreen.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: DexterTokens.dexGreen.withOpacity(0.3)),
+          ),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: DexterTokens.dexGreen,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        
+        // Opening Hours for each day
+        ...['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) {
+          final hours = openingHours.containsKey(day) ? openingHours[day] : <dynamic>[];
+          final isToday = day == SingaporeTime.getCurrentDay();
+          
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 90, // Increased width to accommodate "Public Holiday" and align all rows
+                  child: Text(
+                    day,
+                    style: TextStyle(
+                      fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                      color: isToday ? DexterTokens.dexGreen : null,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    SingaporeTime.formatDayHours(hours),
+                    style: TextStyle(
+                      fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                      color: isToday ? DexterTokens.dexGreen : Colors.grey[600],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+        
+        // Public Holiday row
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 90, // Same width as other days for perfect alignment
+                child: Text(
+                  'Public Holiday',
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  'Closed',
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        
+        // Special Hours (if available)
+        if (donationType['specialHours'] != null) ...[
+          const SizedBox(height: 8),
+          const Divider(),
+          const SizedBox(height: 8),
+          Text(
+            'Special Hours',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 4),
+          ...((donationType['specialHours'] as Map<String, dynamic>).entries.map((entry) {
+            String displayName = entry.key;
+            if (entry.key == 'newYearEve') displayName = 'New Year Eve';
+            if (entry.key == 'chineseNewYearEve') displayName = 'Chinese New Year Eve';
+            if (entry.key == 'christmasEve') displayName = 'Christmas Eve';
+            
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      displayName,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ),
+                  Text(
+                    entry.value,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          })),
+        ],
+      ],
+    );
+    } catch (e) {
+      // If there's an error with donation type data, return empty section
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildGettingHereSection(dynamic centre) {
+    if (centre.transportation == null) {
+      return const SizedBox.shrink();
+    }
+
+    try {
+      final transportation = centre.transportation as Map<String, dynamic>;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -352,50 +718,287 @@ class CentreDetailPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Opening Hours',
+              'Getting Here',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 16),
-            
-            ...['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) {
-              final hours = centre.donationTypes['wholeBlood']['openingHours'].containsKey(day) ? centre.donationTypes['wholeBlood']['openingHours'][day] : <dynamic>[];
-              final isToday = day == SingaporeTime.getCurrentDay();
-              
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 40,
-                      child: Text(
-                        day,
-                        style: TextStyle(
-                          fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                          color: isToday ? DexterTokens.dexGreen : null,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        SingaporeTime.formatDayHours(hours),
-                        style: TextStyle(
-                          fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                          color: isToday ? DexterTokens.dexGreen : Colors.grey[600],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
+
+            // MRT Information
+            if (transportation['mrt'] != null) ...[
+              _buildTransportItem(
+                icon: Icons.train,
+                title: 'MRT',
+                content: _buildMRTInfo(transportation['mrt']),
+                color: Colors.blue,
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            // LRT Information
+            if (transportation['lrt'] != null) ...[
+              _buildTransportItem(
+                icon: Icons.tram,
+                title: 'LRT',
+                content: _buildLRTInfo(transportation['lrt']),
+                color: Colors.green,
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            // Bus Information
+            if (transportation['bus'] != null) ...[
+              _buildTransportItem(
+                icon: Icons.directions_bus,
+                title: 'Bus',
+                content: _buildBusInfo(transportation['bus']),
+                color: Colors.red,
+              ),
+            ],
           ],
         ),
       ),
     );
+    } catch (e) {
+      // If there's an error with transportation data, return empty section
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildTransportItem({
+    required IconData icon,
+    required String title,
+    required Widget content,
+    required Color color,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: color,
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
+              const SizedBox(height: 4),
+              content,
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMRTInfo(Map<String, dynamic> mrtInfo) {
+    final station = mrtInfo['station'] as String?;
+    final lines = mrtInfo['lines'] as List<dynamic>?;
+    final exits = mrtInfo['exits']; // Don't cast yet, check type first
+    final directions = mrtInfo['directions'] as String?;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (station != null) ...[
+          Text(
+            station,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (lines != null && lines.isNotEmpty) ...[
+          Wrap(
+            spacing: 6,
+            children: lines.map((line) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: _getMRTLineColor(line),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                line,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )).toList(),
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (exits != null && exits.isNotEmpty) ...[
+          Text(
+            exits is Map ? 'Exits: ${(exits as Map<String, dynamic>).values.join(', ')}' : 'Exits: ${(exits as List<dynamic>).join(', ')}',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (directions != null) ...[
+          Text(
+            directions,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildLRTInfo(Map<String, dynamic> lrtInfo) {
+    final station = lrtInfo['station'] as String?;
+    final lines = lrtInfo['lines'] as List<dynamic>?;
+    final exits = lrtInfo['exits']; // Don't cast yet, check type first
+    final directions = lrtInfo['directions'] as String?;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (station != null) ...[
+          Text(
+            station,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (lines != null && lines.isNotEmpty) ...[
+          Wrap(
+            spacing: 6,
+            children: lines.map((line) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.green[600],
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                line,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )).toList(),
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (exits != null && exits.isNotEmpty) ...[
+          Text(
+            exits is Map ? 'Exits: ${(exits as Map<String, dynamic>).values.join(', ')}' : 'Exits: ${(exits as List<dynamic>).join(', ')}',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 4),
+        ],
+        if (directions != null) ...[
+          Text(
+            directions,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildBusInfo(Map<String, dynamic> busInfo) {
+    try {
+      final services = busInfo['services'] as List<dynamic>?;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (services != null && services.isNotEmpty) ...[
+          Text(
+            'Bus Services:',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Wrap(
+            spacing: 4,
+            children: services.map((service) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.red[100],
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: Colors.red[300]!),
+              ),
+              child: Text(
+                service.toString(),
+                style: TextStyle(
+                  color: Colors.red[700],
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            )).toList(),
+          ),
+        ],
+      ],
+    );
+    } catch (e) {
+      // If there's an error with bus data, return empty section
+      return const SizedBox.shrink();
+    }
+  }
+
+  Color _getMRTLineColor(String line) {
+    switch (line) {
+      case 'NS':
+        return Colors.red;
+      case 'EW':
+        return Colors.green;
+      case 'CC':
+        return Colors.yellow[700]!;
+      case 'DT':
+        return Colors.blue;
+      case 'TE':
+        return Colors.brown;
+      case 'NE':
+        return Colors.purple;
+      case 'TEL':
+        return Colors.teal;
+      default:
+        return Colors.grey;
+    }
   }
 
   Widget _buildAdditionalInfoSection(dynamic centre) {
