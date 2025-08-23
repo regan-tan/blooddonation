@@ -1,0 +1,252 @@
+[
+  {
+    "id": "hsa-bloodbank-outram",
+    "name": "Bloodbank@HSA (Outram)",
+    "type": "Blood Bank",
+    "address": "11 Outram Road, Singapore 169078",
+    "lat": 1.2805,
+    "lng": 103.837,
+    "phone": "+65 6213 0626",
+    "openingHours": {
+      "Mon": [
+        {
+          "start": "09:00",
+          "end": "16:00"
+        }
+      ],
+      "Tue": [
+        {
+          "start": "09:00",
+          "end": "16:00"
+        }
+      ],
+      "Wed": [
+        {
+          "start": "09:00",
+          "end": "16:00"
+        }
+      ],
+      "Thu": [
+        {
+          "start": "09:00",
+          "end": "16:00"
+        }
+      ],
+      "Fri": [
+        {
+          "start": "09:00",
+          "end": "16:00"
+        }
+      ],
+      "Sat": [
+        {
+          "start": "09:00",
+          "end": "12:15"
+        }
+      ],
+      "Sun": []
+    },
+    "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
+    "lastFetchedAt": "2025-01-21T07:27:00.000Z"
+  },
+  {
+    "id": "hsa-bloodbank-dhoby-ghaut",
+    "name": "Bloodbank@DhobyGhaut",
+    "type": "Blood Bank",
+    "address": "Dhoby Xchange (Near Exit B), 11 Orchard Road, #B1-01 to #B1-09, Singapore 238826",
+    "lat": 1.2988,
+    "lng": 103.8454,
+    "phone": "+65 6333 5532",
+    "openingHours": {
+      "Mon": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Thu": [],
+      "Fri": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ],
+      "Sun": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ]
+    },
+    "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
+    "lastFetchedAt": "2025-01-21T07:27:00.000Z"
+  },
+  {
+    "id": "hsa-bloodbank-woodlands",
+    "name": "Bloodbank@Woodlands",
+    "type": "Blood Bank",
+    "address": "Woodlands Civic Centre (Opposite Causeway Point), 900 South Woodlands Drive, #05-07, Singapore 730900",
+    "lat": 1.4347,
+    "lng": 103.7859,
+    "phone": "+65 6766 0576",
+    "openingHours": {
+      "Mon": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Tue": [],
+      "Wed": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ],
+      "Sun": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ]
+    },
+    "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
+    "lastFetchedAt": "2025-01-21T07:27:00.000Z"
+  },
+  {
+    "id": "hsa-bloodbank-jurong-east",
+    "name": "Bloodbank@WestgateTower",
+    "type": "Blood Bank",
+    "address": "Westgate Tower (Linked to Jurong East MRT Station), 1 Gateway Drive, #10-01 to 05, Singapore 608531",
+    "lat": 1.3336,
+    "lng": 103.7393,
+    "phone": "+65 6710 7548",
+    "openingHours": {
+      "Mon": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Wed": [],
+      "Thu": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ],
+      "Sun": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ]
+    },
+    "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
+    "lastFetchedAt": "2025-01-21T07:27:00.000Z"
+  },
+  {
+    "id": "hsa-bloodbank-punggol",
+    "name": "Bloodbank@One Punggol",
+    "type": "Blood Bank",
+    "address": "One Punggol, 1 Punggol Drive, #02-38, Singapore 828629",
+    "lat": 1.4040,
+    "lng": 103.9022,
+    "phone": "+65 6322 3076",
+    "openingHours": {
+      "Mon": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Tue": [],
+      "Wed": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ],
+      "Sun": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ]
+    },
+    "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
+    "lastFetchedAt": "2025-01-21T07:27:00.000Z"
+  }
+]
