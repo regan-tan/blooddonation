@@ -23,9 +23,7 @@ class DexStatusIndicator extends StatefulWidget {
 class _DexStatusIndicatorState extends State<DexStatusIndicator>
     with TickerProviderStateMixin {
   late AnimationController _pulseController;
-  late AnimationController _colorController;
   late Animation<double> _pulseAnimation;
-  late Animation<Color?> _colorAnimation;
 
   @override
   void initState() {
@@ -34,24 +32,12 @@ class _DexStatusIndicatorState extends State<DexStatusIndicator>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _colorController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
 
     _pulseAnimation = Tween<double>(
       begin: 1.0,
       end: 1.2,
     ).animate(CurvedAnimation(
       parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
-
-    _colorAnimation = ColorTween(
-      begin: widget.isOpen ? DexterTokens.dexGreen : Colors.grey,
-      end: widget.isOpen ? DexterTokens.dexGreen : Colors.grey,
-    ).animate(CurvedAnimation(
-      parent: _colorController,
       curve: Curves.easeInOut,
     ));
 
@@ -64,7 +50,6 @@ class _DexStatusIndicatorState extends State<DexStatusIndicator>
   void didUpdateWidget(DexStatusIndicator oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isOpen != widget.isOpen) {
-      _colorController.forward().then((_) => _colorController.reset());
       if (widget.isOpen && widget.showAnimation) {
         _pulseController.repeat(reverse: true);
       } else {
@@ -77,24 +62,25 @@ class _DexStatusIndicatorState extends State<DexStatusIndicator>
   @override
   void dispose() {
     _pulseController.dispose();
-    _colorController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final statusColor = widget.isOpen ? DexterTokens.dexGreen : Colors.red;
+    
     return AnimatedBuilder(
-      animation: Listenable.merge([_pulseAnimation, _colorAnimation]),
+      animation: _pulseAnimation,
       builder: (context, child) {
         return Transform.scale(
           scale: _pulseAnimation.value,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: _colorAnimation.value?.withOpacity(0.1),
+              color: statusColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: _colorAnimation.value?.withOpacity(0.3) ?? Colors.transparent,
+                color: statusColor.withOpacity(0.3),
                 width: 1.5,
               ),
             ),
@@ -105,11 +91,11 @@ class _DexStatusIndicatorState extends State<DexStatusIndicator>
                   width: widget.size * 0.4,
                   height: widget.size * 0.4,
                   decoration: BoxDecoration(
-                    color: _colorAnimation.value,
+                    color: statusColor,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: _colorAnimation.value?.withOpacity(0.4) ?? Colors.transparent,
+                        color: statusColor.withOpacity(0.4),
                         blurRadius: 8,
                         spreadRadius: 2,
                       ),
@@ -120,7 +106,7 @@ class _DexStatusIndicatorState extends State<DexStatusIndicator>
                 Text(
                   widget.label,
                   style: TextStyle(
-                    color: _colorAnimation.value,
+                    color: statusColor,
                     fontWeight: FontWeight.w600,
                     fontSize: widget.size * 0.5,
                   ),

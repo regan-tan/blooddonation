@@ -276,8 +276,8 @@ class CentreDetailPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: isOpen 
-            ? DexterTokens.dexBlood.withOpacity(0.1)
-            : Colors.grey.withOpacity(0.1),
+            ? DexterTokens.dexGreen.withOpacity(0.1)
+            : Colors.red.withOpacity(0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -287,7 +287,7 @@ class CentreDetailPage extends ConsumerWidget {
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: isOpen ? DexterTokens.dexBlood : Colors.grey,
+              color: isOpen ? DexterTokens.dexGreen : Colors.red,
               shape: BoxShape.circle,
             ),
           ),
@@ -295,7 +295,7 @@ class CentreDetailPage extends ConsumerWidget {
           Text(
             isOpen ? 'Open' : 'Closed',
             style: TextStyle(
-              color: isOpen ? DexterTokens.dexBlood : Colors.grey[600],
+              color: isOpen ? DexterTokens.dexGreen : Colors.red,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -307,7 +307,7 @@ class CentreDetailPage extends ConsumerWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.1),
+          color: Colors.red.withOpacity(0.1),
           borderRadius: BorderRadius.circular(6),
         ),
         child: Row(
@@ -317,7 +317,7 @@ class CentreDetailPage extends ConsumerWidget {
               width: 8,
               height: 8,
               decoration: BoxDecoration(
-                color: Colors.grey,
+                color: Colors.red,
                 shape: BoxShape.circle,
               ),
             ),
@@ -325,7 +325,7 @@ class CentreDetailPage extends ConsumerWidget {
             Text(
               'Closed',
               style: TextStyle(
-                color: Colors.grey[600],
+                color: Colors.red,
                 fontWeight: FontWeight.w600,
               ),
             ),
