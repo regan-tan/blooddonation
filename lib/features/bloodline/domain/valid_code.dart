@@ -1,19 +1,39 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class ValidCode {
+  final String code;
+  final String centreId;
+  final DateTime generatedAt;
+  final DateTime expiresAt;
+  final String? usedByUid;
+  final DateTime? usedAt;
 
-part 'valid_code.freezed.dart';
-part 'valid_code.g.dart';
+  const ValidCode({
+    required this.code,
+    required this.centreId,
+    required this.generatedAt,
+    required this.expiresAt,
+    this.usedByUid,
+    this.usedAt,
+  });
 
-@freezed
-class ValidCode with _$ValidCode {
-  const factory ValidCode({
-    required String code,
-    required String centreId,
-    required DateTime generatedAt,
-    required DateTime expiresAt,
-    String? usedByUid,
-    DateTime? usedAt,
-  }) = _ValidCode;
+  factory ValidCode.fromJson(Map<String, dynamic> json) {
+    return ValidCode(
+      code: json['code'] as String,
+      centreId: json['centreId'] as String,
+      generatedAt: DateTime.parse(json['generatedAt'] as String),
+      expiresAt: DateTime.parse(json['expiresAt'] as String),
+      usedByUid: json['usedByUid'] as String?,
+      usedAt: json['usedAt'] != null ? DateTime.parse(json['usedAt'] as String) : null,
+    );
+  }
 
-  factory ValidCode.fromJson(Map<String, dynamic> json) =>
-      _$ValidCodeFromJson(json);
+  Map<String, dynamic> toJson() {
+    return {
+      'code': code,
+      'centreId': centreId,
+      'generatedAt': generatedAt.toIso8601String(),
+      'expiresAt': expiresAt.toIso8601String(),
+      'usedByUid': usedByUid,
+      'usedAt': usedAt?.toIso8601String(),
+    };
+  }
 }

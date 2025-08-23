@@ -1,23 +1,55 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class UserProfile {
+  final String uid;
+  final String displayName;
+  final int age;
+  final String? school;
+  final String? bloodType;
+  final String? photoUrl;
+  final DateTime createdAt;
+  final int totalLivesImpacted;
+  final int longestStreak;
+  final String? currentChallengeId;
 
-part 'user_profile.freezed.dart';
-part 'user_profile.g.dart';
+  const UserProfile({
+    required this.uid,
+    required this.displayName,
+    required this.age,
+    this.school,
+    this.bloodType,
+    this.photoUrl,
+    required this.createdAt,
+    this.totalLivesImpacted = 0,
+    this.longestStreak = 0,
+    this.currentChallengeId,
+  });
 
-@freezed
-class UserProfile with _$UserProfile {
-  const factory UserProfile({
-    required String uid,
-    required String displayName,
-    required int age,
-    String? school,
-    String? bloodType,
-    String? photoUrl,
-    required DateTime createdAt,
-    @Default(0) int totalLivesImpacted,
-    @Default(0) int longestStreak,
-    String? currentChallengeId,
-  }) = _UserProfile;
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      uid: json['uid'] as String,
+      displayName: json['displayName'] as String,
+      age: json['age'] as int,
+      school: json['school'] as String?,
+      bloodType: json['bloodType'] as String?,
+      photoUrl: json['photoUrl'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      totalLivesImpacted: json['totalLivesImpacted'] as int? ?? 0,
+      longestStreak: json['longestStreak'] as int? ?? 0,
+      currentChallengeId: json['currentChallengeId'] as String?,
+    );
+  }
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileFromJson(json);
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'displayName': displayName,
+      'age': age,
+      'school': school,
+      'bloodType': bloodType,
+      'photoUrl': photoUrl,
+      'createdAt': createdAt.toIso8601String(),
+      'totalLivesImpacted': totalLivesImpacted,
+      'longestStreak': longestStreak,
+      'currentChallengeId': currentChallengeId,
+    };
+  }
 }

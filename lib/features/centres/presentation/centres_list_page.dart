@@ -455,8 +455,8 @@ class _CentresListPageState extends ConsumerState<CentresListPage> {
                         ),
                         const SizedBox(width: 14),
                                                  DexStatusIndicator(
-                           isOpen: false,
-                           label: 'Closed',
+                           isOpen: SingaporeTime.isCurrentlyOpen(centre.donationTypes['wholeBlood']['openingHours']),
+                           label: SingaporeTime.isCurrentlyOpen(centre.donationTypes['wholeBlood']['openingHours']) ? 'Open' : 'Closed',
                            size: 22,
                          ),
                       ],

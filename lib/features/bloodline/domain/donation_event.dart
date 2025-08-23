@@ -1,19 +1,39 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class DonationEvent {
+  final String id;
+  final String uid;
+  final String centreId;
+  final String code;
+  final DateTime donatedAt;
+  final bool verified;
 
-part 'donation_event.freezed.dart';
-part 'donation_event.g.dart';
+  const DonationEvent({
+    required this.id,
+    required this.uid,
+    required this.centreId,
+    required this.code,
+    required this.donatedAt,
+    this.verified = true,
+  });
 
-@freezed
-class DonationEvent with _$DonationEvent {
-  const factory DonationEvent({
-    required String id,
-    required String uid,
-    required String centreId,
-    required String code,
-    required DateTime donatedAt,
-    @Default(true) bool verified,
-  }) = _DonationEvent;
+  factory DonationEvent.fromJson(Map<String, dynamic> json) {
+    return DonationEvent(
+      id: json['id'] as String,
+      uid: json['uid'] as String,
+      centreId: json['centreId'] as String,
+      code: json['code'] as String,
+      donatedAt: DateTime.parse(json['donatedAt'] as String),
+      verified: json['verified'] as bool? ?? true,
+    );
+  }
 
-  factory DonationEvent.fromJson(Map<String, dynamic> json) =>
-      _$DonationEventFromJson(json);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'uid': uid,
+      'centreId': centreId,
+      'code': code,
+      'donatedAt': donatedAt.toIso8601String(),
+      'verified': verified,
+    };
+  }
 }

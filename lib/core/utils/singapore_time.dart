@@ -15,13 +15,13 @@ class SingaporeTime {
   }
   
   /// Check if a centre is currently open based on opening hours
-  static bool isCurrentlyOpen(Map<String, List<OpeningHours>> openingHours) {
+  static bool isCurrentlyOpen(Map<String, dynamic> openingHours) {
     final singaporeTime = now();
     final currentDay = _getDayName(singaporeTime.weekday);
     final currentMinutes = singaporeTime.hour * 60 + singaporeTime.minute;
     
     // Get today's hours
-    final todayHours = openingHours[currentDay];
+    final todayHours = openingHours[currentDay] as List<dynamic>?;
     
     if (todayHours == null || todayHours.isEmpty) {
       return false;
@@ -29,8 +29,8 @@ class SingaporeTime {
     
     // Check each time period for today
     for (final period in todayHours) {
-      final startTime = period.start;
-      final endTime = period.end;
+      final startTime = period['start'] as String;
+      final endTime = period['end'] as String;
       
       final startMinutes = _timeToMinutes(startTime);
       final endMinutes = _timeToMinutes(endTime);
@@ -44,9 +44,9 @@ class SingaporeTime {
   }
   
   /// Format today's opening hours for display
-  static String formatTodaysHours(Map<String, List<OpeningHours>> openingHours) {
+  static String formatTodaysHours(Map<String, dynamic> openingHours) {
     final currentDay = getCurrentDay();
-    final todayHours = openingHours[currentDay];
+    final todayHours = openingHours[currentDay] as List<dynamic>?;
     
     if (todayHours == null || todayHours.isEmpty) {
       return 'Closed';
@@ -54,8 +54,24 @@ class SingaporeTime {
     
     // Format multiple periods (if any)
     final periods = todayHours.map((period) {
-      final start = period.start;
-      final end = period.end;
+      final start = period['start'] as String;
+      final end = period['end'] as String;
+      return '$start-$end';
+    }).join(', ');
+    
+    return periods;
+  }
+  
+  /// Format any day's opening hours for display
+  static String formatDayHours(List<dynamic> dayHours) {
+    if (dayHours.isEmpty) {
+      return 'Closed';
+    }
+    
+    // Format multiple periods (if any)
+    final periods = dayHours.map((period) {
+      final start = period['start'] as String;
+      final end = period['end'] as String;
       return '$start-$end';
     }).join(', ');
     
@@ -72,8 +88,5 @@ class SingaporeTime {
     return int.parse(parts[0]) * 60 + int.parse(parts[1]);
   }
   
-  /// Test method to verify opening hours logic
-  static void testOpeningHours(Map<String, List<OpeningHours>> openingHours) {
-    // Removed debug logging for cleaner production code
-  }
+
 }

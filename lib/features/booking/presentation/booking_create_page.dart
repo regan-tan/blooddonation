@@ -388,7 +388,7 @@ class _BookingCreatePageState extends ConsumerState<BookingCreatePage> {
 
   Widget _buildTimeSelector(dynamic centre) {
     final dayOfWeek = _getDayOfWeek(_selectedDate!.weekday);
-    final dayHours = centre.openingHours[dayOfWeek] as List<dynamic>?;
+    final dayHours = centre.donationTypes['wholeBlood']['openingHours'][dayOfWeek] as List<dynamic>?;
 
     if (dayHours == null || dayHours.isEmpty) {
       return Card(

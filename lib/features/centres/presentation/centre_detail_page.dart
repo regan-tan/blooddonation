@@ -218,10 +218,7 @@ class CentreDetailPage extends ConsumerWidget {
   }
 
   Widget _buildOpenStatus(dynamic centre) {
-    // Debug: Test the opening hours logic
-    SingaporeTime.testOpeningHours(centre.openingHours);
-    
-    final isOpen = SingaporeTime.isCurrentlyOpen(centre.openingHours);
+    final isOpen = SingaporeTime.isCurrentlyOpen(centre.donationTypes['wholeBlood']['openingHours']);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -364,7 +361,7 @@ class CentreDetailPage extends ConsumerWidget {
             const SizedBox(height: 16),
             
             ...['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) {
-              final hours = centre.openingHours.containsKey(day) ? centre.openingHours[day] : <OpeningHours>[];
+              final hours = centre.donationTypes['wholeBlood']['openingHours'].containsKey(day) ? centre.donationTypes['wholeBlood']['openingHours'][day] : <dynamic>[];
               final isToday = day == SingaporeTime.getCurrentDay();
               
               return Padding(
@@ -384,7 +381,7 @@ class CentreDetailPage extends ConsumerWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        SingaporeTime.formatTodaysHours({day: hours}),
+                        SingaporeTime.formatDayHours(hours),
                         style: TextStyle(
                           fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
                           color: isToday ? DexterTokens.dexGreen : Colors.grey[600],

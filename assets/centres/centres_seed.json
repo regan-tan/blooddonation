@@ -3,49 +3,121 @@
     "id": "hsa-bloodbank-outram",
     "name": "Bloodbank@HSA (Outram)",
     "type": "Blood Bank",
-    "address": "11 Outram Road, Singapore 169078",
+    "address": "Health Sciences Authority (Opposite Outram Park MRT Station), 11 Outram Road, Singapore 169078",
     "lat": 1.2805,
     "lng": 103.837,
     "phone": "+65 6213 0626",
-    "openingHours": {
-      "Mon": [
-        {
-          "start": "09:00",
-          "end": "16:00"
+    "postDonationPhone": "+65 1800-226 3320",
+    "donationTypes": {
+      "wholeBlood": {
+        "available": true,
+        "openingHours": {
+          "Mon": [],
+          "Tue": [
+            {
+              "start": "09:00",
+              "end": "17:00"
+            }
+          ],
+          "Wed": [
+            {
+              "start": "09:00",
+              "end": "17:00"
+            }
+          ],
+          "Thu": [
+            {
+              "start": "09:00",
+              "end": "17:00"
+            }
+          ],
+          "Fri": [
+            {
+              "start": "09:00",
+              "end": "17:00"
+            }
+          ],
+          "Sat": [
+            {
+              "start": "09:00",
+              "end": "16:30"
+            }
+          ],
+          "Sun": [
+            {
+              "start": "09:00",
+              "end": "16:30"
+            }
+          ]
+        },
+        "specialHours": {
+          "newYearEve": "09:00-14:00",
+          "chineseNewYearEve": "09:00-14:00",
+          "christmasEve": "09:00-14:00"
         }
-      ],
-      "Tue": [
-        {
-          "start": "09:00",
-          "end": "16:00"
+      },
+      "apheresis": {
+        "available": true,
+        "openingHours": {
+          "Mon": [],
+          "Tue": [
+            {
+              "start": "09:00",
+              "end": "16:30"
+            }
+          ],
+          "Wed": [
+            {
+              "start": "09:00",
+              "end": "16:30"
+            }
+          ],
+          "Thu": [
+            {
+              "start": "09:00",
+              "end": "16:30"
+            }
+          ],
+          "Fri": [
+            {
+              "start": "09:00",
+              "end": "16:30"
+            }
+          ],
+          "Sat": [
+            {
+              "start": "09:00",
+              "end": "15:00"
+            }
+          ],
+          "Sun": []
+        },
+        "specialHours": {
+          "newYearEve": "09:00-12:15",
+          "chineseNewYearEve": "09:00-12:15",
+          "christmasEve": "09:00-12:15"
         }
-      ],
-      "Wed": [
-        {
-          "start": "09:00",
-          "end": "16:00"
-        }
-      ],
-      "Thu": [
-        {
-          "start": "09:00",
-          "end": "16:00"
-        }
-      ],
-      "Fri": [
-        {
-          "start": "09:00",
-          "end": "16:00"
-        }
-      ],
-      "Sat": [
-        {
-          "start": "09:00",
-          "end": "12:15"
-        }
-      ],
-      "Sun": []
+      }
     },
+    "transportation": {
+      "mrt": {
+        "station": "Outram Park MRT Station",
+        "lines": ["TEL", "EWL", "NEL"],
+        "exits": {
+          "TEL_EWL": "Exit 7",
+          "NEL": "Exit 6"
+        },
+        "directions": "Take lift from Exit 6 > Turn left upon exiting the lift > Walk up the stairs towards the HSA building on the right > Walk through the HSA car park and take the lift to Level 1"
+      },
+      "bus": {
+        "services": ["33", "63", "121", "122", "174", "851", "970"]
+      }
+    },
+    "notes": [
+      "Open for donations during lunchtime",
+      "Both whole blood and apheresis donations available",
+      "Located opposite Outram Park MRT Station"
+    ],
     "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
     "lastFetchedAt": "2025-01-21T07:27:00.000Z"
   },
@@ -53,53 +125,86 @@
     "id": "hsa-bloodbank-dhoby-ghaut",
     "name": "Bloodbank@DhobyGhaut",
     "type": "Blood Bank",
-    "address": "Dhoby Xchange (Near Exit B), 11 Orchard Road, #B1-01 to #B1-09, Singapore 238826",
+    "address": "Dhoby Ghaut MRT Station, Dhoby Xchange (Near Exit B), 11 Orchard Road, #B1-01 to #B1-09, Singapore 238826",
     "lat": 1.2988,
     "lng": 103.8454,
     "phone": "+65 6333 5532",
-    "openingHours": {
-      "Mon": [
-        {
-          "start": "12:00",
-          "end": "20:00"
+    "postDonationPhone": "+65 1800-226 3320",
+    "donationTypes": {
+      "wholeBlood": {
+        "available": true,
+        "openingHours": {
+          "Mon": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Tue": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Wed": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Thu": [],
+          "Fri": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Sat": [
+            {
+              "start": "10:00",
+              "end": "17:00"
+            }
+          ],
+          "Sun": [
+            {
+              "start": "10:00",
+              "end": "17:00"
+            }
+          ]
+        },
+        "specialHours": {
+          "newYearEve": "09:00-14:00",
+          "chineseNewYearEve": "09:00-14:00",
+          "christmasEve": "09:00-14:00"
         }
-      ],
-      "Tue": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Wed": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Thu": [],
-      "Fri": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Sat": [
-        {
-          "start": "10:00",
-          "end": "17:00"
-        }
-      ],
-      "Sun": [
-        {
-          "start": "10:00",
-          "end": "17:00"
-        }
-      ]
+      },
+      "apheresis": {
+        "available": false,
+        "note": "Apheresis donation not available at this location"
+      }
     },
+    "transportation": {
+      "mrt": {
+        "station": "Dhoby Ghaut MRT Station",
+        "lines": ["NS", "CC", "NE"],
+        "exits": ["Exit B"],
+        "directions": "Located at Dhoby Xchange near Exit B"
+      },
+      "bus": {
+        "services": ["7", "14", "14E", "16", "36", "77", "106", "111", "124", "167", "174", "175", "190", "502", "518", "972"]
+      }
+    },
+    "notes": [
+      "Open for donations during lunchtime",
+      "Closed on Thursdays and public holidays",
+      "Located at Dhoby Xchange shopping center",
+      "Whole blood donation only - no apheresis",
+      "Note: We are open for donations during lunchtime"
+    ],
     "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
     "lastFetchedAt": "2025-01-21T07:27:00.000Z"
   },
-  {
+    {
     "id": "hsa-bloodbank-woodlands",
     "name": "Bloodbank@Woodlands",
     "type": "Blood Bank",
@@ -107,45 +212,78 @@
     "lat": 1.4347,
     "lng": 103.7859,
     "phone": "+65 6766 0576",
-    "openingHours": {
-      "Mon": [
-        {
-          "start": "12:00",
-          "end": "20:00"
+    "postDonationPhone": "+65 1800-226 3320",
+    "donationTypes": {
+      "wholeBlood": {
+        "available": true,
+        "openingHours": {
+          "Mon": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Tue": [],
+          "Wed": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Thu": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Fri": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Sat": [
+            {
+              "start": "10:00",
+              "end": "17:00"
+            }
+          ],
+          "Sun": [
+            {
+              "start": "10:00",
+              "end": "17:00"
+            }
+          ]
+        },
+        "specialHours": {
+          "newYearEve": "09:00-14:00",
+          "chineseNewYearEve": "09:00-14:00",
+          "christmasEve": "09:00-14:00"
         }
-      ],
-      "Tue": [],
-      "Wed": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Thu": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Fri": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Sat": [
-        {
-          "start": "10:00",
-          "end": "17:00"
-        }
-      ],
-      "Sun": [
-        {
-          "start": "10:00",
-          "end": "17:00"
-        }
-      ]
+      },
+      "apheresis": {
+        "available": false,
+        "note": "Apheresis donation is not available at this Bloodbank"
+      }
     },
+    "transportation": {
+      "mrt": {
+        "station": "Woodlands MRT Station",
+        "lines": ["NS", "TE"],
+        "exits": ["NS9", "TE2"],
+        "directions": "North-South Line (NS9) and Thomson-East Coast Line (TE2)"
+      },
+      "bus": {
+        "services": ["161", "168", "168A", "169", "169A", "169B", "178", "178A", "187", "856", "856A", "856B", "900", "901", "901M", "902", "903", "903M", "911", "911T", "912", "912A", "913", "913M", "913T", "960", "960E", "962", "963", "963E", "964", "966", "966A", "969", "925", "925A", "925M", "950", "961", "961M", "965", "965A", "965T", "967"]
+      }
+    },
+    "notes": [
+      "Note: Apheresis donation is not available at this Bloodbank",
+      "Open for donations during lunchtime",
+      "Closed on Tuesdays and public holidays",
+      "Located opposite Causeway Point shopping center",
+      "Whole blood donation only - no apheresis"
+    ],
     "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
     "lastFetchedAt": "2025-01-21T07:27:00.000Z"
   },
@@ -157,45 +295,78 @@
     "lat": 1.3336,
     "lng": 103.7393,
     "phone": "+65 6710 7548",
-    "openingHours": {
-      "Mon": [
-        {
-          "start": "12:00",
-          "end": "20:00"
+    "postDonationPhone": "+65 1800-226 3320",
+    "donationTypes": {
+      "wholeBlood": {
+        "available": true,
+        "openingHours": {
+          "Mon": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Tue": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Wed": [],
+          "Thu": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Fri": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Sat": [
+            {
+              "start": "10:00",
+              "end": "17:00"
+            }
+          ],
+          "Sun": [
+            {
+              "start": "10:00",
+              "end": "17:00"
+            }
+          ]
+        },
+        "specialHours": {
+          "newYearEve": "09:00-14:00",
+          "chineseNewYearEve": "09:00-14:00",
+          "christmasEve": "09:00-14:00"
         }
-      ],
-      "Tue": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Wed": [],
-      "Thu": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Fri": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Sat": [
-        {
-          "start": "10:00",
-          "end": "17:00"
-        }
-      ],
-      "Sun": [
-        {
-          "start": "10:00",
-          "end": "17:00"
-        }
-      ]
+      },
+      "apheresis": {
+        "available": false,
+        "note": "Apheresis donation is not available at this Bloodbank"
+      }
     },
+    "transportation": {
+      "mrt": {
+        "station": "Jurong East MRT Station",
+        "lines": ["EW", "NS"],
+        "exits": ["Exit D"],
+        "directions": "Linked directly to Westgate Tower"
+      },
+      "bus": {
+        "services": ["41", "49", "51", "52", "66", "97", "97e", "98", "98M", "105", "143", "143M", "183", "197", "333", "334", "335", "506", "993", "78", "78A", "79", "79T", "160", "160A", "870"]
+      }
+    },
+    "notes": [
+      "Note: Apheresis donation is not available at this Bloodbank",
+      "Open for donations during lunchtime",
+      "Closed on Wednesdays and public holidays",
+      "Located at Westgate Tower shopping center",
+      "Whole blood donation only - no apheresis"
+    ],
     "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
     "lastFetchedAt": "2025-01-21T07:27:00.000Z"
   },
@@ -207,45 +378,84 @@
     "lat": 1.4040,
     "lng": 103.9022,
     "phone": "+65 6322 3076",
-    "openingHours": {
-      "Mon": [
-        {
-          "start": "12:00",
-          "end": "20:00"
+    "postDonationPhone": "+65 1800-226 3320",
+    "donationTypes": {
+      "wholeBlood": {
+        "available": true,
+        "openingHours": {
+          "Mon": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Tue": [],
+          "Wed": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Thu": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Fri": [
+            {
+              "start": "12:00",
+              "end": "20:00"
+            }
+          ],
+          "Sat": [
+            {
+              "start": "10:00",
+              "end": "17:00"
+            }
+          ],
+          "Sun": [
+            {
+              "start": "10:00",
+              "end": "17:00"
+            }
+          ]
+        },
+        "specialHours": {
+          "newYearEve": "09:00-14:00",
+          "chineseNewYearEve": "09:00-14:00",
+          "christmasEve": "09:00-14:00"
         }
-      ],
-      "Tue": [],
-      "Wed": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Thu": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Fri": [
-        {
-          "start": "12:00",
-          "end": "20:00"
-        }
-      ],
-      "Sat": [
-        {
-          "start": "10:00",
-          "end": "17:00"
-        }
-      ],
-      "Sun": [
-        {
-          "start": "10:00",
-          "end": "17:00"
-        }
-      ]
+      },
+      "apheresis": {
+        "available": false,
+        "note": "Apheresis donation not available at this location"
+      }
     },
+    "transportation": {
+      "mrt": {
+        "station": "Punggol MRT Station",
+        "lines": ["NE"],
+        "exits": ["NE17"],
+        "directions": "North-East Line (NE17), walk about 10 minutes to One Punggol"
+      },
+      "lrt": {
+        "station": "Sam Kee LRT Station",
+        "lines": ["PTC"],
+        "exits": ["PTC1"],
+        "directions": "Punggol LRT line, transfer from Punggol MRT"
+      },
+      "bus": {
+        "services": ["84G", "117", "382", "382W"]
+      }
+    },
+    "notes": [
+      "Note: Apheresis donation is not available at this Bloodbank",
+      "Open for donations during lunchtime",
+      "Closed on Tuesdays and public holidays",
+      "Located in One Punggol building",
+      "Whole blood donation only - no apheresis"
+    ],
     "bookingUrl": "https://www.hsa.gov.sg/blood-donation/where-to-donate",
     "lastFetchedAt": "2025-01-21T07:27:00.000Z"
   }
