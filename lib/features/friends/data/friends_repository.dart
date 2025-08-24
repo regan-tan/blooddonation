@@ -79,60 +79,50 @@ class FriendsRepository {
     }
   }
 
-  // Add a friend
+  // Add a friend (NEW: Array-based approach)
   Future<void> addFriend(String friendUid, String friendEmail, String friendDisplayName, String? friendPhotoUrl) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) throw Exception('User not authenticated');
 
     try {
-      final friendId = '${currentUser.uid}_$friendUid';
-      final reverseFriendId = '${friendUid}_${currentUser.uid}';
-
-      // Check if friendship already exists
-      final existingFriend = await _firestore
-          .collection('friends')
-          .doc(friendId)
-          .get();
-
-      if (existingFriend.exists) {
+      final batch = _firestore.batch();
+      
+      // Get current user's data
+      final currentUserDoc = await _firestore.collection('users').doc(currentUser.uid).get();
+      final currentUserData = currentUserDoc.data() ?? {};
+      
+      // Check if friend already exists in current user's friends array
+      final currentFriends = List<Map<String, dynamic>>.from(currentUserData['friends'] ?? []);
+      if (currentFriends.any((friend) => friend['uid'] == friendUid)) {
         throw Exception('User is already in your friends list');
       }
 
-      // Create friend relationship (bidirectional)
-      final batch = _firestore.batch();
+      // Add friend to current user's friends array
+      final now = DateTime.now();
+      final newFriend = {
+        'uid': friendUid,
+        'email': friendEmail,
+        'displayName': friendDisplayName,
+        'photoUrl': friendPhotoUrl,
+        'addedAt': Timestamp.fromDate(now),
+      };
+      
+      batch.update(_firestore.collection('users').doc(currentUser.uid), {
+        'friends': FieldValue.arrayUnion([newFriend])
+      });
 
-      // Add friend from current user's perspective
-      batch.set(
-        _firestore.collection('friends').doc(friendId),
-        {
-          'id': friendId,
-          'userUid': currentUser.uid,
-          'friendUid': friendUid,
-          'friendEmail': friendEmail,
-          'friendDisplayName': friendDisplayName,
-          'friendPhotoUrl': friendPhotoUrl,
-          'addedAt': FieldValue.serverTimestamp(),
-          'status': 'accepted', // For simplicity, auto-accept for now
-        },
-      );
-
-      // Add reverse relationship (friend's perspective)
-      final currentUserDoc = await _firestore.collection('users').doc(currentUser.uid).get();
-      final currentUserData = currentUserDoc.data();
-
-      batch.set(
-        _firestore.collection('friends').doc(reverseFriendId),
-        {
-          'id': reverseFriendId,
-          'userUid': friendUid,
-          'friendUid': currentUser.uid,
-          'friendEmail': currentUser.email,
-          'friendDisplayName': currentUserData?['displayName'] ?? 'Unknown User',
-          'friendPhotoUrl': currentUserData?['photoUrl'],
-          'addedAt': FieldValue.serverTimestamp(),
-          'status': 'accepted',
-        },
-      );
+      // Add current user to friend's friends array
+      final currentUserFriend = {
+        'uid': currentUser.uid,
+        'email': currentUser.email ?? 'No email',
+        'displayName': currentUserData['displayName'] ?? 'Unknown User',
+        'photoUrl': currentUserData['photoUrl'],
+        'addedAt': Timestamp.fromDate(now),
+      };
+      
+      batch.update(_firestore.collection('users').doc(friendUid), {
+        'friends': FieldValue.arrayUnion([currentUserFriend])
+      });
 
       await batch.commit();
     } catch (e) {
@@ -140,53 +130,91 @@ class FriendsRepository {
     }
   }
 
-  // Get user's friends
+  // Get user's friends (NEW: Array-based approach)
   Future<List<Friend>> getUserFriends() async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) throw Exception('User not authenticated');
 
     try {
-      final querySnapshot = await _firestore
-          .collection('friends')
-          .where('userUid', isEqualTo: currentUser.uid)
-          .where('status', isEqualTo: 'accepted')
-          .get();
-
-      final friends = querySnapshot.docs.map((doc) {
-        final data = doc.data();
+      final userDoc = await _firestore.collection('users').doc(currentUser.uid).get();
+      
+      if (!userDoc.exists) return [];
+      
+      final userData = userDoc.data() ?? {};
+      final friendsArray = List<Map<String, dynamic>>.from(userData['friends'] ?? []);
+      
+      if (kDebugMode) {
+        print('Current user friends array: $friendsArray');
+        print('Friends array length: ${friendsArray.length}');
+      }
+      
+      final friends = friendsArray.map((friendData) {
+        if (kDebugMode) print('Processing friend data: $friendData');
+        
         return Friend(
-          id: data['id'],
-          uid: data['friendUid'],
-          email: data['friendEmail'],
-          displayName: data['friendDisplayName'],
-          photoUrl: data['friendPhotoUrl'],
-          addedAt: (data['addedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-          status: data['status'],
+          id: '${currentUser.uid}_${friendData['uid']}', // Generate ID for compatibility
+          uid: friendData['uid'] as String,
+          email: friendData['email'] as String? ?? 'No email',
+          displayName: friendData['displayName'] as String? ?? 'Unknown User',
+          photoUrl: friendData['photoUrl'] as String?,
+          addedAt: (friendData['addedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          status: 'accepted', // All friends in array are accepted
         );
       }).toList();
 
-      // Sort by addedAt in memory instead of using orderBy
+      // Sort by addedAt (newest first)
       friends.sort((a, b) => b.addedAt.compareTo(a.addedAt));
+      
+      if (kDebugMode) print('Returning ${friends.length} friends: ${friends.map((f) => f.displayName).toList()}');
       
       return friends;
     } catch (e) {
+      if (kDebugMode) print('Error fetching friends: $e');
       throw Exception('Error fetching friends: $e');
     }
   }
 
-  // Remove friend
+  // Remove friend (NEW: Array-based approach)
   Future<void> removeFriend(String friendUid) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) throw Exception('User not authenticated');
 
     try {
-      final friendId = '${currentUser.uid}_$friendUid';
-      final reverseFriendId = '${friendUid}_${currentUser.uid}';
-
       final batch = _firestore.batch();
       
-      batch.delete(_firestore.collection('friends').doc(friendId));
-      batch.delete(_firestore.collection('friends').doc(reverseFriendId));
+      // Get current user's friends array
+      final currentUserDoc = await _firestore.collection('users').doc(currentUser.uid).get();
+      final currentUserData = currentUserDoc.data() ?? {};
+      final currentFriends = List<Map<String, dynamic>>.from(currentUserData['friends'] ?? []);
+      
+      // Find and remove the friend from current user's array
+      final friendToRemove = currentFriends.firstWhere(
+        (friend) => friend['uid'] == friendUid,
+        orElse: () => <String, dynamic>{},
+      );
+      
+      if (friendToRemove.isNotEmpty) {
+        batch.update(_firestore.collection('users').doc(currentUser.uid), {
+          'friends': FieldValue.arrayRemove([friendToRemove])
+        });
+      }
+      
+      // Get friend's data and remove current user from their array
+      final friendDoc = await _firestore.collection('users').doc(friendUid).get();
+      final friendData = friendDoc.data() ?? {};
+      final friendsFriends = List<Map<String, dynamic>>.from(friendData['friends'] ?? []);
+      
+      // Find and remove current user from friend's array
+      final currentUserToRemove = friendsFriends.firstWhere(
+        (friend) => friend['uid'] == currentUser.uid,
+        orElse: () => <String, dynamic>{},
+      );
+      
+      if (currentUserToRemove.isNotEmpty) {
+        batch.update(_firestore.collection('users').doc(friendUid), {
+          'friends': FieldValue.arrayRemove([currentUserToRemove])
+        });
+      }
       
       await batch.commit();
     } catch (e) {
@@ -194,29 +222,84 @@ class FriendsRepository {
     }
   }
 
-  // Get friends for a specific user (for group booking invitations)
+  // Get friends for a specific user (for group booking invitations) - NEW: Array-based
   Future<List<Friend>> getFriendsForUser(String userUid) async {
     try {
-      final querySnapshot = await _firestore
-          .collection('friends')
-          .where('userUid', isEqualTo: userUid)
-          .where('status', isEqualTo: 'accepted')
-          .get();
-
-      return querySnapshot.docs.map((doc) {
-        final data = doc.data();
+      final userDoc = await _firestore.collection('users').doc(userUid).get();
+      
+      if (!userDoc.exists) return [];
+      
+      final userData = userDoc.data() ?? {};
+      final friendsArray = List<Map<String, dynamic>>.from(userData['friends'] ?? []);
+      
+      return friendsArray.map((friendData) {
         return Friend(
-          id: data['id'],
-          uid: data['friendUid'],
-          email: data['friendEmail'],
-          displayName: data['friendDisplayName'],
-          photoUrl: data['friendPhotoUrl'],
-          addedAt: (data['addedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-          status: data['status'],
+          id: '${userUid}_${friendData['uid']}',
+          uid: friendData['uid'] as String,
+          email: friendData['email'] as String? ?? 'No email',
+          displayName: friendData['displayName'] as String? ?? 'Unknown User',
+          photoUrl: friendData['photoUrl'] as String?,
+          addedAt: (friendData['addedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          status: 'accepted',
         );
       }).toList();
     } catch (e) {
       throw Exception('Error fetching user friends: $e');
+    }
+  }
+
+  // MIGRATION: Convert from old friends collection to new array-based approach
+  Future<void> migrateFriendsFromCollectionToArray() async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) return;
+
+    try {
+      if (kDebugMode) print('Starting friends migration for user: ${currentUser.uid}');
+      
+      // Get old friends from the friends collection
+      final oldFriendsSnapshot = await _firestore
+          .collection('friends')
+          .where('userUid', isEqualTo: currentUser.uid)
+          .get();
+
+      if (oldFriendsSnapshot.docs.isEmpty) {
+        if (kDebugMode) print('No old friends found to migrate');
+        return;
+      }
+
+      // Convert old friends to new format
+      final friendsArray = <Map<String, dynamic>>[];
+      for (final doc in oldFriendsSnapshot.docs) {
+        final data = doc.data();
+        friendsArray.add({
+          'uid': data['friendUid'],
+          'email': data['friendEmail'],
+          'displayName': data['friendDisplayName'],
+          'photoUrl': data['friendPhotoUrl'],
+          'addedAt': data['addedAt'] ?? Timestamp.fromDate(DateTime.now()),
+        });
+      }
+
+      // Update user document with friends array
+      await _firestore.collection('users').doc(currentUser.uid).update({
+        'friends': friendsArray,
+      });
+
+      if (kDebugMode) print('Successfully migrated ${friendsArray.length} friends to array format');
+
+      // Optionally: Clean up old friends collection documents
+      // (Comment out if you want to keep the old data as backup)
+      /*
+      final batch = _firestore.batch();
+      for (final doc in oldFriendsSnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+      if (kDebugMode) print('Cleaned up old friends collection documents');
+      */
+
+    } catch (e) {
+      if (kDebugMode) print('Error during friends migration: $e');
     }
   }
 }

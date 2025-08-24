@@ -18,6 +18,35 @@ class _FriendsPageState extends ConsumerState<FriendsPage> {
   String? _searchError;
 
   @override
+  void initState() {
+    super.initState();
+    // Run migration once when page loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _runMigration();
+    });
+  }
+
+  Future<void> _runMigration() async {
+    try {
+      final friendsRepository = ref.read(friendsRepositoryProvider);
+      
+      // Force refresh to clear any cache
+      ref.invalidate(userFriendsProvider);
+      
+      // Run migration
+      await friendsRepository.migrateFriendsFromCollectionToArray();
+      
+      // Force another refresh after migration
+      ref.invalidate(userFriendsProvider);
+      
+      print('Migration completed successfully');
+    } catch (e) {
+      // Migration failed, but don't show error to user
+      print('Migration failed: $e');
+    }
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -159,6 +188,16 @@ class _FriendsPageState extends ConsumerState<FriendsPage> {
       appBar: AppBar(
         title: const Text('Friends'),
         elevation: 0,
+        actions: [
+          // Debug button to force refresh
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              print('Manual refresh triggered');
+              ref.invalidate(userFriendsProvider);
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
