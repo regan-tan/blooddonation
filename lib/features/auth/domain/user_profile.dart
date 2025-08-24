@@ -1,5 +1,6 @@
 class UserProfile {
   final String uid;
+  final String email;
   final String displayName;
   final int age;
   final String? school;
@@ -12,6 +13,7 @@ class UserProfile {
 
   const UserProfile({
     required this.uid,
+    required this.email,
     required this.displayName,
     required this.age,
     this.school,
@@ -26,6 +28,7 @@ class UserProfile {
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       uid: json['uid'] as String,
+      email: json['email'] as String? ?? 'No email',
       displayName: json['displayName'] as String,
       age: json['age'] as int,
       school: json['school'] as String?,
@@ -41,6 +44,7 @@ class UserProfile {
   Map<String, dynamic> toJson() {
     return {
       'uid': uid,
+      'email': email,
       'displayName': displayName,
       'age': age,
       'school': school,

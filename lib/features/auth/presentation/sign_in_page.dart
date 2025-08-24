@@ -52,6 +52,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
         // Create user profile
         await authRepository.createUserProfile(
           uid: credential.user!.uid,
+          email: _emailController.text.trim(),
           displayName: _nameController.text.trim(),
           age: int.parse(_ageController.text),
         );

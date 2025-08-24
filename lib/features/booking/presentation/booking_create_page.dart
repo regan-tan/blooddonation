@@ -19,6 +19,7 @@ class BookingCreatePage extends ConsumerStatefulWidget {
 }
 
 class _BookingCreatePageState extends ConsumerState<BookingCreatePage> {
+  String? _selectedDonationType; // 'wholeBlood' or 'apheresis'
   DateTime? _selectedDate;
   String? _selectedTime;
   final _notesController = TextEditingController();
@@ -30,7 +31,17 @@ class _BookingCreatePageState extends ConsumerState<BookingCreatePage> {
     super.dispose();
   }
 
-  Future<void> _selectDate() async {
+  Future<void> _selectDate(dynamic centre) async {
+    if (_selectedDonationType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a donation type first'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     final now = DateTime.now();
     final firstDate = now;
     final lastDate = now.add(const Duration(days: 90));
@@ -40,6 +51,9 @@ class _BookingCreatePageState extends ConsumerState<BookingCreatePage> {
       initialDate: _selectedDate ?? now,
       firstDate: firstDate,
       lastDate: lastDate,
+      selectableDayPredicate: (DateTime day) {
+        return _isDayAvailable(day, centre);
+      },
     );
 
     if (date != null) {
@@ -50,11 +64,20 @@ class _BookingCreatePageState extends ConsumerState<BookingCreatePage> {
     }
   }
 
+  bool _isDayAvailable(DateTime day, dynamic centre) {
+    if (_selectedDonationType == null) return false;
+    
+    final dayOfWeek = _getDayOfWeek(day.weekday);
+    final dayHours = centre.donationTypes[_selectedDonationType]['openingHours'][dayOfWeek] as List<dynamic>?;
+    
+    return dayHours != null && dayHours.isNotEmpty;
+  }
+
   Future<void> _createBooking() async {
-    if (_selectedDate == null || _selectedTime == null) {
+    if (_selectedDonationType == null || _selectedDate == null || _selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select both date and time'),
+          content: Text('Please select donation type, date and time'),
           backgroundColor: Colors.orange,
         ),
       );
@@ -275,13 +298,18 @@ class _BookingCreatePageState extends ConsumerState<BookingCreatePage> {
           
           const SizedBox(height: 24),
           
+          // Donation Type Selection
+          _buildDonationTypeSelector(centre),
+          
+          const SizedBox(height: 16),
+          
           // Date Selection
-          _buildDateSelector(),
+          _buildDateSelector(centre),
           
           const SizedBox(height: 16),
           
           // Time Selection
-          if (_selectedDate != null)
+          if (_selectedDonationType != null && _selectedDate != null)
             _buildTimeSelector(centre),
           
           const SizedBox(height: 16),
@@ -350,35 +378,236 @@ class _BookingCreatePageState extends ConsumerState<BookingCreatePage> {
     );
   }
 
-  Widget _buildDateSelector() {
+  Widget _buildDonationTypeSelector(dynamic centre) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Select Donation Type',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            
+            // Whole Blood Option
+            if (centre.donationTypes['wholeBlood']?['available'] == true)
+              _buildDonationTypeOption(
+                'wholeBlood',
+                'Whole Blood Donation',
+                'Regular blood donation including red blood cells, white blood cells, platelets and plasma',
+                Icons.favorite,
+                Colors.red,
+              ),
+            
+            const SizedBox(height: 12),
+            
+            // Apheresis Option
+            if (centre.donationTypes['apheresis']?['available'] == true)
+              _buildDonationTypeOption(
+                'apheresis',
+                'Apheresis Donation',
+                'Targeted donation of specific blood components like platelets or plasma',
+                Icons.science,
+                Colors.blue,
+              )
+            else
+              _buildUnavailableDonationTypeOption(
+                'Apheresis Donation',
+                centre.donationTypes['apheresis']?['note'] ?? 'Apheresis donation is not available at this location',
+                Icons.science,
+                Colors.grey,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDonationTypeOption(
+    String typeKey,
+    String title,
+    String description,
+    IconData icon,
+    Color color,
+  ) {
+    final isSelected = _selectedDonationType == typeKey;
+    
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedDonationType = typeKey;
+          _selectedDate = null; // Reset date when donation type changes
+          _selectedTime = null; // Reset time when donation type changes
+        });
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: isSelected ? DexterTokens.dexGreen : Colors.grey[300]!,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          color: isSelected ? DexterTokens.dexGreen.withOpacity(0.1) : null,
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? DexterTokens.dexGreen : Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: DexterTokens.dexGreen,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUnavailableDonationTypeOption(
+    String title,
+    String description,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!, width: 1),
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[50],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.block,
+            color: Colors.grey[400],
+            size: 20,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateSelector(dynamic centre) {
+    final isEnabled = _selectedDonationType != null;
+    
     return Card(
       child: InkWell(
-        onTap: _selectDate,
+        onTap: isEnabled ? () => _selectDate(centre) : null,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              const Icon(Icons.calendar_today, color: DexterTokens.dexGreen),
+              Icon(
+                Icons.calendar_today, 
+                color: isEnabled ? DexterTokens.dexGreen : Colors.grey,
+              ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Select Date',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: isEnabled ? Colors.black87 : Colors.grey,
+                      ),
                     ),
                     Text(
                       _selectedDate != null
                           ? _formatDate(_selectedDate!)
-                          : 'Choose a date for your appointment',
+                          : isEnabled 
+                              ? 'Choose a date for your appointment'
+                              : 'Select donation type first',
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right),
+              Icon(
+                Icons.chevron_right,
+                color: isEnabled ? Colors.black54 : Colors.grey,
+              ),
             ],
           ),
         ),
@@ -387,8 +616,12 @@ class _BookingCreatePageState extends ConsumerState<BookingCreatePage> {
   }
 
   Widget _buildTimeSelector(dynamic centre) {
+    if (_selectedDonationType == null) {
+      return const SizedBox.shrink();
+    }
+    
     final dayOfWeek = _getDayOfWeek(_selectedDate!.weekday);
-    final dayHours = centre.donationTypes['wholeBlood']['openingHours'][dayOfWeek] as List<dynamic>?;
+    final dayHours = centre.donationTypes[_selectedDonationType]['openingHours'][dayOfWeek] as List<dynamic>?;
 
     if (dayHours == null || dayHours.isEmpty) {
       return Card(

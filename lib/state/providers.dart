@@ -8,6 +8,7 @@ import '../features/bloodline/data/bloodline_repository.dart';
 import '../features/bloodline/data/codes_repository.dart';
 import '../features/bloodline/application/streak_service.dart';
 import '../features/bloodline/application/nomination_service.dart';
+import '../features/friends/data/friends_repository.dart';
 import '../features/notifications/local_notifications.dart';
 
 // Auth Providers
@@ -93,6 +94,28 @@ final currentChallengeProvider = StreamProvider((ref) {
     },
     loading: () => const Stream.empty(),
     error: (_, __) => const Stream.empty(),
+  );
+});
+
+// Friends Providers
+final friendsRepositoryProvider = Provider<FriendsRepository>((ref) {
+  return FriendsRepository();
+});
+
+final userFriendsProvider = StreamProvider<List<dynamic>>((ref) {
+  final authState = ref.watch(authStateProvider);
+  final repository = ref.watch(friendsRepositoryProvider);
+  
+  return authState.when(
+    data: (user) {
+      if (user == null) return Stream.value(<dynamic>[]);
+      return Stream.fromFuture(repository.getUserFriends()).handleError((error) {
+        // Convert any error to a stream error for better handling
+        throw error;
+      });
+    },
+    loading: () => Stream.value(<dynamic>[]),
+    error: (error, stack) => Stream.error(error, stack),
   );
 });
 

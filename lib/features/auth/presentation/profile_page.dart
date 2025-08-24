@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../state/providers.dart';
 import '../../../core/theme/dexter_theme.dart';
@@ -164,6 +165,11 @@ class ProfilePage extends ConsumerWidget {
           
           const SizedBox(height: 20),
           
+          // Friends Section
+          _buildFriendsSection(context),
+          
+          const SizedBox(height: 20),
+          
           // Settings & Information
           _buildSettingsSection(context),
           
@@ -227,6 +233,26 @@ class ProfilePage extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFriendsSection(BuildContext context) {
+    return Card(
+      child: Column(
+        children: [
+          _buildSettingsItem(
+            'Manage Friends',
+            Icons.people,
+            () => context.push('/friends'),
+          ),
+          const Divider(height: 1),
+          _buildSettingsItem(
+            'Invite Friends to Group Bookings',
+            Icons.group_add,
+            () => _showInviteInfo(context),
+          ),
+        ],
       ),
     );
   }
@@ -331,6 +357,36 @@ class ProfilePage extends ConsumerWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showInviteInfo(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Invite Friends'),
+        content: const Text(
+          'Add friends to your network and invite them to join group blood donation appointments!\n\n'
+          'Steps:\n'
+          '1. Add friends using their email address\n'
+          '2. Create a group booking\n'
+          '3. Invite your friends to join you\n\n'
+          'Together, we can save more lives!',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Got it'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.push('/friends');
+            },
+            child: const Text('Manage Friends'),
           ),
         ],
       ),

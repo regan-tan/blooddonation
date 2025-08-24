@@ -12,6 +12,7 @@ import 'features/bloodline/presentation/bloodline_home_page.dart';
 import 'features/bloodline/presentation/challenge_create_page.dart';
 import 'features/bloodline/presentation/challenge_detail_page.dart';
 import 'features/bloodline/presentation/code_verify_page.dart';
+import 'features/friends/presentation/friends_page.dart';
 import 'core/widgets/main_navigation.dart';
 import 'state/providers.dart';
 
@@ -97,6 +98,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/profile',
             builder: (context, state) => const ProfilePage(),
+          ),
+          GoRoute(
+            path: '/friends',
+            builder: (context, state) => const FriendsPage(),
           ),
         ],
       ),
