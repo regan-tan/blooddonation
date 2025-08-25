@@ -15,6 +15,34 @@ class CodesRepository {
     required String centreId,
   }) async {
     try {
+      // HARDCODED TESTING CODE: BLD04Q0RWG is always valid for testing
+      if (code == 'BLD04Q0RWG') {
+        print('Using hardcoded test code: BLD04Q0RWG');
+        
+        // Create donation event directly for test code
+        final donationEvent = DonationEvent(
+          id: _uuid.v4(),
+          uid: uid,
+          centreId: centreId,
+          code: code,
+          donatedAt: DateTime.now(),
+          verified: true,
+        );
+
+        print('Created donation event: ${donationEvent.toJson()}');
+
+        // Store donation event
+        await _firestore
+            .collection('donation_events')
+            .doc(donationEvent.id)
+            .set(donationEvent.toJson());
+
+        print('Donation event stored in Firestore successfully');
+        print('Returning donation event: ${donationEvent.code}');
+
+        return donationEvent;
+      }
+
       return await _firestore.runTransaction<DonationEvent?>((transaction) async {
         // Find the valid code
         final codeQuery = await _firestore
@@ -70,6 +98,17 @@ class CodesRepository {
   /// Checks if a code exists and its status
   Future<Map<String, dynamic>> checkCodeStatus(String code) async {
     try {
+      // HARDCODED TESTING CODE: BLD04Q0RWG is always valid for testing
+      if (code == 'BLD04Q0RWG') {
+        return {
+          'exists': true,
+          'valid': true,
+          'message': 'Test code is always valid',
+          'centreId': 'test', // Can be used at any centre
+          'isTestCode': true,
+        };
+      }
+
       final querySnapshot = await _firestore
           .collection('valid_codes')
           .where('code', isEqualTo: code)
@@ -160,6 +199,11 @@ class CodesRepository {
         .set(validCode.toJson());
 
     return validCode;
+  }
+
+  /// Get the hardcoded test code for testing purposes
+  String getTestCode() {
+    return 'BLD04Q0RWG';
   }
 
   String _generateCode() {

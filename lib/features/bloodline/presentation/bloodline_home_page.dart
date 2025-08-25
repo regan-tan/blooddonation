@@ -17,7 +17,7 @@ class BloodlineHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentChallenge = ref.watch(currentChallengeProvider);
-    final userProfile = ref.watch(currentUserProvider);
+    final userProfile = ref.watch(refreshedUserProfileProvider);
 
     return Scaffold(
       appBar: AppBar(
